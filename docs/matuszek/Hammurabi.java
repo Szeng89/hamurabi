@@ -43,6 +43,7 @@ public class Hammurabi {
             }
 
             grain -= askHowMuchGrainToFeedPeople(grain);
+            askHowManyAcresToPlant(landAcres, people, grain);
             year++;
             yearlyMessage();}
     }
@@ -74,13 +75,13 @@ public class Hammurabi {
 
         while (true) { // Keep asking until a valid input is received
             try {
-                Integer acresToBuy = scanner.nextInt(); // Attempt to read the user's input
+                Integer acresToBuy = scanner.nextInt(); // Read the user's input
 
-                // Calculate the cost of the requested acres
+                // Calculate the cost of acres
                 Integer cost = acresToBuy * bushelsPerAcreValue;
 
                 if (cost <= grain) {
-                    // The player has enough grain to buy the requested acres
+                    // The player has enough grain to buy acres
                     return acresToBuy;
                 } else {
                     // The player does not have enough grain
@@ -122,18 +123,17 @@ public class Hammurabi {
 
         while (true) { // Keep asking until a valid input is given
             try {
-                Integer bushelsToFeed = scanner.nextInt(); // Attempt to read the user's input
+                Integer bushelsToFeed = scanner.nextInt(); // Read the user's input
 
                 if (bushelsToFeed >= 0 && bushelsToFeed <= availableGrain) {
                     // Check if the amount to feed is within the available grain
-                    // Here, also consider updating the population based on the grain fed
                     int peopleStarved = starvationDeaths(people, bushelsToFeed);
                     people -= peopleStarved; // Update the population after feeding
 
-                    // Optionally, check if the starvation leads to game over
+                    // Check if the starvation leads to game over
                     if (people <= 0) {
                         System.out.println("Everyone has starved. Game Over.");
-                        gameOver = true; // Assuming there's a gameOver flag in your class
+                        gameOver = true;
                     }
 
                     return bushelsToFeed;
@@ -149,6 +149,34 @@ public class Hammurabi {
         }
     }
 
+    public Integer askHowManyAcresToPlant(Integer landAcres, Integer people, Integer grain) {
+        System.out.println("How many acres will you plant?");
+
+        while (true) { // Keep asking until a valid input is provided
+            try {
+                Integer acresToPlant = scanner.nextInt(); // Read the user's input
+
+                // Calculate the maximum acres that can be planted by one person
+                Integer maxAcresPerPerson = people * 10;
+
+                // Calculate the grain needed for planting (assuming 2 bushels per acre)
+                Integer grainNeeded = acresToPlant * 2;
+
+                if (acresToPlant <= landAcres && acresToPlant <= maxAcresPerPerson && grainNeeded <= grain) {
+                    // Player has enough land, people, and grain to plant the acres
+                    return acresToPlant;
+                } else {
+                    // The player does not have enough resources
+                    System.out.println("Cannot plant that many acres. You might not have enough land, people, or grain. Try again.");
+                }
+            } catch (InputMismatchException e) {
+                // Non-integer value
+                System.out.println("Invalid input. Please enter a valid number of acres.");
+                scanner.nextLine(); // Clear the scanner buffer
+            }
+        }
+    }
+
 
     public Integer starvationDeaths(int population, int bushelsFedToPeople) {
         int grainPerPerson = 20; // Assuming each person needs 20 bushels to survive
@@ -157,7 +185,7 @@ public class Hammurabi {
     }
 
     public void setNewLandPrice() {
-        // Generate a random price between 17 and 23, inclusive
+        // Generate a random price between 17 and 23
         bushelsPerAcreValue = random.nextInt((23 - 17) + 1) + 17;
     }
 
