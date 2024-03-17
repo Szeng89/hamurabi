@@ -43,11 +43,8 @@ public class Hammurabi {
             }
 
             grain -= askHowMuchGrainToFeedPeople(grain);
-            askHowManyAcresToPlant(landAcres, people, grain); // Adjusted to use updated method parameters
             year++;
-            yearlyMessage();
-            // Additional logic to check game over conditions
-        }
+            yearlyMessage();}
     }
 
 
@@ -92,7 +89,7 @@ public class Hammurabi {
             } catch (InputMismatchException e) {
                 // Handle the case where the input was not an integer
                 System.out.println("Invalid input. Please enter a number.");
-                scanner.nextLine(); // Clear the invalid input before trying again
+                scanner.nextLine(); // Clear the invalid input before asking again
             }
         }
     }
@@ -115,11 +112,60 @@ public class Hammurabi {
             } catch (InputMismatchException e) {
                 // Catch if the user does not enter an integer
                 System.out.println("That's not a number. Please enter a valid number.");
-                scanner.nextLine(); // Clear the scanner's input buffer to handle the next input correctly
+                scanner.nextLine(); // Clear the invalid input before asking again
             }
         }
     }
-    
+
+    public Integer askHowMuchGrainToFeedPeople(Integer availableGrain) {
+        System.out.println("How many bushels of grain would you like to feed your citizens?");
+
+        while (true) { // Keep asking until a valid input is given
+            try {
+                Integer bushelsToFeed = scanner.nextInt(); // Attempt to read the user's input
+
+                if (bushelsToFeed >= 0 && bushelsToFeed <= availableGrain) {
+                    // Check if the amount to feed is within the available grain
+                    // Here, also consider updating the population based on the grain fed
+                    int peopleStarved = starvationDeaths(people, bushelsToFeed);
+                    people -= peopleStarved; // Update the population after feeding
+
+                    // Optionally, check if the starvation leads to game over
+                    if (people <= 0) {
+                        System.out.println("Everyone has starved. Game Over.");
+                        gameOver = true; // Assuming there's a gameOver flag in your class
+                    }
+
+                    return bushelsToFeed;
+                } else {
+                    // The user entered a number that is either negative or more than available grain
+                    System.out.println("That amount is not valid. You cannot feed your citizens more grain than you have or a negative amount. Please enter a valid number.");
+                }
+            } catch (InputMismatchException e) {
+                // The user did not enter an integer
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine(); // Clear the invalid input before asking again
+            }
+        }
+    }
+
+
+    public Integer starvationDeaths(int population, int bushelsFedToPeople) {
+        int grainPerPerson = 20; // Assuming each person needs 20 bushels to survive
+        int peopleFed = bushelsFedToPeople / grainPerPerson;
+        return Math.max(0, population - peopleFed); // Ensure we don't return a negative number
+    }
+
+    public void setNewLandPrice() {
+        // Generate a random price between 17 and 23, inclusive
+        bushelsPerAcreValue = random.nextInt((23 - 17) + 1) + 17;
+    }
+
+    public Integer getLandPrice() {
+        return bushelsPerAcreValue;
+    }
+
+
 
     //UNUSED GOT FROM NICk
 
