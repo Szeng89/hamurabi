@@ -27,60 +27,50 @@ public class Hammurabi {
     void playGame() {
         startGameMessage();
         while (!gameOver) {
-            // Set the new land price at the beginning of each year
             setNewLandPrice();
-
-            // Inform the player of the new land price
             System.out.println("The price of land is now " + getLandPrice() + " bushels per acre.");
 
-            // Ask how many acres to buy and get the number of acres bought
             Integer acresBought = askHowManyAcresToBuy(getLandPrice(), grain);
             landAcres += acresBought;
-
-            // Only ask how many acres to sell if no acres were bought
             if (acresBought == 0) {
                 landAcres -= askHowManyAcresToSell(landAcres);
             }
 
-            // Ask how much grain to feed people and update grain stock
-            grain -= askHowMuchGrainToFeedPeople(grain);
+            // Ask how much grain to feed people
+            Integer grainFedToPeople = askHowMuchGrainToFeedPeople(grain);
+            grain -= grainFedToPeople; // Deduct the grain used to feed people
 
-            // Ask how many acres to plant
             askHowManyAcresToPlant(landAcres, people, grain);
 
-            // Calculate starvation after feeding the people and update the population
-            peopleStarved = starvationDeaths(people, grain);
+            //handle starvation deaths , updating the population
+            peopleStarved = starvationDeaths(people, grainFedToPeople);
             people -= peopleStarved;
 
-            // If the entire population has starved, end the game
             if (people <= 0) {
                 System.out.println("Game Over. Your entire population has starved.");
                 gameOver = true;
-                break; // Exit the game loop
+                break;
             }
 
-            boolean hasUprising = uprising(people, peopleStarved);
 
+//            people += cameToTown;
+
+            boolean hasUprising = uprising(people, peopleStarved);
             if (hasUprising) {
-                System.out.println("An uprising has occured due to the high number of starvation deaths");
+                System.out.println("An uprising has occurred due to the high number of starvation deaths.");
                 gameOver = true;
             }
 
-            people += cameToTown;
-
-            // Advance to the next year
             year++;
-
-            // Show yearly message to player
             yearlyMessage();
 
-            // Example condition to end the game after 10 years
             if (year == 10) {
                 gameOver = true;
                 System.out.println("Game Over. You've completed 10 years of rule.");
             }
         }
     }
+
 
 
 
@@ -231,9 +221,9 @@ public class Hammurabi {
         }
     }
 
-    public Integer starvationDeaths(Integer people, Integer bushelsToFeed) {
+    public Integer starvationDeaths(Integer people, Integer grain) {
         Integer grainPerPerson = 20; // Assuming each person needs 20 bushels to survive
-        Integer peopleFed = bushelsToFeed / grainPerPerson;
+        Integer peopleFed = grain / grainPerPerson;
         return Math.max(0, people - peopleFed); // Ensure we don't return a negative number
     }
 
