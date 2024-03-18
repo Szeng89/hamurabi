@@ -59,7 +59,14 @@ public class Hammurabi {
                 break; // Exit the game loop
             }
 
-//            people += cameToTown;
+            boolean hasUprising = uprising(people, peopleStarved);
+
+            if (hasUprising) {
+                System.out.println("An uprising has occured due to the high number of starvation deaths");
+                gameOver = true;
+            }
+
+            people += cameToTown;
 
             // Advance to the next year
             year++;
@@ -95,8 +102,9 @@ public class Hammurabi {
                         "\nThe city now owns %d acres." +
                         "\nYou harvested 2 bushels per acre."
 //                        "\nRats ate %d bushels.\nYou now have %d bushels in store.\n"   bushelsEatenByRat
-//                        cameToTown,
-                , year, peopleStarved, people, landAcres, grain);
+
+
+                , year,peopleStarved,cameToTown, people, landAcres, grain);
     }
 
 //    public Integer askHowManyAcresToBuy(Integer bushelsPerAcreValue, Integer grain){
@@ -223,10 +231,15 @@ public class Hammurabi {
         }
     }
 
-    public Integer starvationDeaths(Integer people, Integer grain) {
-        int grainPerPerson = 20; // Assuming each person needs 20 bushels to survive
-        int peopleFed = grain / grainPerPerson;
+    public Integer starvationDeaths(Integer people, Integer bushelsToFeed) {
+        Integer grainPerPerson = 20; // Assuming each person needs 20 bushels to survive
+        Integer peopleFed = bushelsToFeed / grainPerPerson;
         return Math.max(0, people - peopleFed); // Ensure we don't return a negative number
+    }
+
+    public boolean uprising(Integer people, Integer howManyPeopleStarved) {
+        double percentageOfPeopleStarved = (double) howManyPeopleStarved / people * 100;
+        return percentageOfPeopleStarved > 45;
     }
 
     public void setNewLandPrice() {
