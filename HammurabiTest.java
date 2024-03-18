@@ -2,10 +2,10 @@
 //
 //import static org.junit.Assert.*;
 //
-//import hammurabi.docs.matuszek.Hammurabi;
+//import hammurabi.src.main.Hammurabi;
 //import org.junit.Before;
 //import org.junit.Test;
-//
+////
 //public class HammurabiTest {
 //
 //    Hammurabi ham;
@@ -18,7 +18,12 @@
 //    public void setUp() throws Exception {
 //        ham = new Hammurabi();
 //    }
+
+
+
+
 //
+
 //    @Test
 //    public final void testPlagueDeaths1() {
 //        int number_of_plagues = 0;
@@ -121,6 +126,6 @@
 //            assertTrue("You never have a land cost of " + j + " bushels per acre.", cost[j] > 0);
 //        }
 //    }
-//
+////
 //}
 //

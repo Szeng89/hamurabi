@@ -1,4 +1,4 @@
-package hammurabi.docs.matuszek;
+package hammurabi.src.main;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
@@ -12,7 +12,7 @@ public class Hammurabi {
     private Integer year = 0;
     private Integer peopleStarved = 0;
     private Integer cameToTown = 0;
-    private Integer bushelsEatenByRat = 0;
+//    private Integer bushelsEatenByRat = 0;
 
 
     Random random = new Random();
@@ -42,11 +42,39 @@ public class Hammurabi {
                 landAcres -= askHowManyAcresToSell(landAcres);
             }
 
+            // Ask how much grain to feed people and update grain stock
             grain -= askHowMuchGrainToFeedPeople(grain);
+
+            // Ask how many acres to plant
             askHowManyAcresToPlant(landAcres, people, grain);
+
+            // Calculate starvation after feeding the people and update the population
+            peopleStarved = starvationDeaths(people, grain);
+            people -= peopleStarved;
+
+            // If the entire population has starved, end the game
+            if (people <= 0) {
+                System.out.println("Game Over. Your entire population has starved.");
+                gameOver = true;
+                break; // Exit the game loop
+            }
+
+//            people += cameToTown;
+
+            // Advance to the next year
             year++;
-            yearlyMessage();}
+
+            // Show yearly message to player
+            yearlyMessage();
+
+            // Example condition to end the game after 10 years
+            if (year == 10) {
+                gameOver = true;
+                System.out.println("Game Over. You've completed 10 years of rule.");
+            }
+        }
     }
+
 
 
 
@@ -65,12 +93,29 @@ public class Hammurabi {
         System.out.printf("Hamurabi:\nI beg to report to you in year %d, %d people starved, %d came to the city." +
                         "\nPopulation is now %d." +
                         "\nThe city now owns %d acres." +
-                        "\nYou harvested 2 bushels per acre." +
-                        "\nRats ate %d bushels.\nYou now have %d bushels in store.\n"
-                , year, peopleStarved, cameToTown, people, landAcres, bushelsEatenByRat, grain);
+                        "\nYou harvested 2 bushels per acre."
+//                        "\nRats ate %d bushels.\nYou now have %d bushels in store.\n"   bushelsEatenByRat
+//                        cameToTown,
+                , year, peopleStarved, people, landAcres, grain);
     }
 
-    public Integer askHowManyAcresToBuy(Integer bushelsPerAcreValue, Integer grain) {
+//    public Integer askHowManyAcresToBuy(Integer bushelsPerAcreValue, Integer grain){
+//        System.out.println("How many acres would you like to buy? ");
+//
+//        Scanner scanner =new Scanner(System.in); // date that was inputed by the system
+//        Integer input = scanner.nextInt();
+//
+//        if (grain >= input  * bushelsPerAcreValue) {
+//            System.out.println(input);
+//            return bushelsPerAcreValue / grain;
+//
+//        }
+//
+//        return input;
+//
+//    }
+    public Integer askHowManyAcresToBuy(Integer bushelsPerAcreValue, Integer
+    grain) {
         System.out.println("How many acres would you like to buy?");
 
         while (true) { // Keep asking until a valid input is received
@@ -106,6 +151,7 @@ public class Hammurabi {
                 if (acresToSell >= 0 && acresToSell <= landAcres) {
                     // User has entered a valid number, so return this number
                     return acresToSell;
+
                 } else {
                     // User's input is not valid (trying to sell more land than owned or a negative number)
                     System.out.println("Invalid amount. You can't sell more acres than you own or a negative number. Please enter a valid number.");
@@ -118,16 +164,16 @@ public class Hammurabi {
         }
     }
 
-    public Integer askHowMuchGrainToFeedPeople(Integer availableGrain) {
+    public Integer askHowMuchGrainToFeedPeople(Integer grain) {
         System.out.println("How many bushels of grain would you like to feed your citizens?");
 
         while (true) { // Keep asking until a valid input is given
             try {
                 Integer bushelsToFeed = scanner.nextInt(); // Read the user's input
 
-                if (bushelsToFeed >= 0 && bushelsToFeed <= availableGrain) {
+                if (bushelsToFeed >= 0 && bushelsToFeed <= grain) {
                     // Check if the amount to feed is within the available grain
-                    int peopleStarved = starvationDeaths(people, bushelsToFeed);
+                    int peopleStarved = starvationDeaths(people, grain);
                     people -= peopleStarved; // Update the population after feeding
 
                     // Check if the starvation leads to game over
@@ -149,7 +195,7 @@ public class Hammurabi {
         }
     }
 
-    public Integer askHowManyAcresToPlant(Integer landAcres, Integer people, Integer grain) {
+    public void askHowManyAcresToPlant(Integer landAcres, Integer people, Integer grain) {
         System.out.println("How many acres will you plant?");
 
         while (true) { // Keep asking until a valid input is provided
@@ -164,7 +210,7 @@ public class Hammurabi {
 
                 if (acresToPlant <= landAcres && acresToPlant <= maxAcresPerPerson && grainNeeded <= grain) {
                     // Player has enough land, people, and grain to plant the acres
-                    return acresToPlant;
+                    return;
                 } else {
                     // The player does not have enough resources
                     System.out.println("Cannot plant that many acres. You might not have enough land, people, or grain. Try again.");
@@ -177,11 +223,10 @@ public class Hammurabi {
         }
     }
 
-
-    public Integer starvationDeaths(int population, int bushelsFedToPeople) {
+    public Integer starvationDeaths(Integer people, Integer grain) {
         int grainPerPerson = 20; // Assuming each person needs 20 bushels to survive
-        int peopleFed = bushelsFedToPeople / grainPerPerson;
-        return Math.max(0, population - peopleFed); // Ensure we don't return a negative number
+        int peopleFed = grain / grainPerPerson;
+        return Math.max(0, people - peopleFed); // Ensure we don't return a negative number
     }
 
     public void setNewLandPrice() {
@@ -192,7 +237,6 @@ public class Hammurabi {
     public Integer getLandPrice() {
         return bushelsPerAcreValue;
     }
-
 
 
     //UNUSED GOT FROM NICk
