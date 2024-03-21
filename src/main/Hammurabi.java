@@ -96,22 +96,7 @@ public class Hammurabi {
 
                 , year,peopleStarved,cameToTown, people, landAcres, grain);
     }
-
-//    public Integer askHowManyAcresToBuy(Integer bushelsPerAcreValue, Integer grain){
-//        System.out.println("How many acres would you like to buy? ");
-//
-//        Scanner scanner =new Scanner(System.in); // date that was inputed by the system
-//        Integer input = scanner.nextInt();
-//
-//        if (grain >= input  * bushelsPerAcreValue) {
-//            System.out.println(input);
-//            return bushelsPerAcreValue / grain;
-//
-//        }
-//
-//        return input;
-//
-//    }
+    
     public Integer askHowManyAcresToBuy(Integer bushelsPerAcreValue, Integer
     grain) {
         System.out.println("How many acres would you like to buy?");
